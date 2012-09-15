@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require 'goliath/runner'
+require File.expand_path(File.dirname($0),'daq_endpoint')  #'daq_endpoint/daq_endpoint.rb'
+
+# set default run options
+runner = Goliath::Runner.new(ARGV, DaqEndpoint.new)
+runner.port = nil
+runner.address = File.expand_path(File.join(File.dirname($0),'..','shared','sockets','daq_endpoint.sock'))
+runner.log_file = File.expand_path(File.join(File.dirname($0),'..','shared','logs','daq_endpoint.log'))
+runner.app = Goliath::Rack::Builder.build(DaqEndpoint, runner.api)
+runner.run
