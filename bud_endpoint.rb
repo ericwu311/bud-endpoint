@@ -3,10 +3,9 @@
 #
 # Uses Goliath, an aysnc ruby web server framework.
 #
-require 'goliath/api'
-require 'pp'
+require 'goliath'
 
-class DaqEndpoint < Goliath::API
+class BudEndpoint < Goliath::API
   use Goliath::Rack::Params           # parse & merge query and body parameters
   use Goliath::Rack::DefaultMimeType  # cleanup accepted media types
   use Goliath::Rack::Formatters::JSON # JSON output formatter
@@ -23,7 +22,7 @@ class DaqEndpoint < Goliath::API
     if params["uploaded"] and params["uploaded"][:tempfile]
       zipped_data = params["uploaded"][:tempfile].read
       begin
-        filename = "/var/www/moscone/shared/inbound_data/#{time}.zip"
+        filename = app_folder + "/shared/data/#{time}.zip"
         File.open(filename, 'wb') { |f| f.write(zipped_data) }
         z = params["uploaded"].merge({:output_filename => filename})
         z.delete(:tempfile)
@@ -44,3 +43,5 @@ class DaqEndpoint < Goliath::API
   end
 
 end
+
+# curl -i -F uploaded=@/Users/ericzou/Downloads/newrelic.yaml http://localhost:9000
