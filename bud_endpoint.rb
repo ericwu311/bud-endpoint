@@ -22,7 +22,7 @@ class BudEndpoint < Goliath::API
     if params["uploaded"] and params["uploaded"][:tempfile]
       zipped_data = params["uploaded"][:tempfile].read
       begin
-        filename = app_folder + "/shared/data/#{time}.zip"
+        filename = app_folder + "/data/#{time}.zip"
         File.open(filename, 'wb') { |f| f.write(zipped_data) }
         z = params["uploaded"].merge({:output_filename => filename})
         z.delete(:tempfile)
