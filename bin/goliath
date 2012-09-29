@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+app_path = File.expand_path("../..", __FILE__)
+
+puts app_path
+if ARGV.first == 'start'
+  system "cd #{app_path} && bundle exec ruby bud_endpoint.rb -d -e production"
+elsif ARGV.first == 'stop'
+  system "kill -QUIT `cat #{app_path}/goliath.pid`"
+end
