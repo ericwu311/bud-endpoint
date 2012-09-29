@@ -44,4 +44,4 @@ class BudEndpoint < Goliath::API
 
 end
 
-# curl -i -F uploaded=@/Users/ericzou/Downloads/newrelic.yaml http://localhost:9000
+# curl -i -F uploaded=@/Users/ericzou/Downloads/text_file.txt http://54.243.213.2:9000
