@@ -3,6 +3,8 @@
 #
 # Uses Goliath, an aysnc ruby web server framework.
 #
+require_relative 'config/environment'
+
 require 'goliath'
 
 class BudEndpoint < Goliath::API
@@ -24,6 +26,7 @@ class BudEndpoint < Goliath::API
       begin
         filename = app_folder + "/data/#{time}.zip"
         File.open(filename, 'wb') { |f| f.write(zipped_data) }
+        Resque.enqueue(PhpWorker, filename)
         z = params["uploaded"].merge({:output_filename => filename})
         z.delete(:tempfile)
       rescue Exception => e
@@ -44,4 +47,5 @@ class BudEndpoint < Goliath::API
 
 end
 
-# curl -i -F uploaded=@/Users/ericzou/Downloads/text_file.txt http://54.243.213.2:9000
+# curl -i -F uploaded=@/Users/ericzou/Downloads/test_file.txt http://54.243.213.2:9000
+# curl -i -F uploaded=@/Users/ericzou/Downloads/test_file.txt http://127.0.0.1:9000
