@@ -26,7 +26,7 @@ class BudEndpoint < Goliath::API
       begin
         filename = app_folder + "/data/#{time}.zip"
         File.open(filename, 'wb') { |f| f.write(zipped_data) }
-        Resque.enqueue(PhpWorker, filename)
+        PhpScheduler.schedule(filename)
         z = params["uploaded"].merge({:output_filename => filename})
         z.delete(:tempfile)
       rescue Exception => e

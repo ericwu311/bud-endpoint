@@ -6,6 +6,7 @@ gem 'em-synchrony'
 gem 'redis' , "~> 2.2.0", :require => ["redis/connection/synchrony", "redis"]
 gem 'rvm-capistrano'
 gem 'resque'
+gem 'resque-scheduler'
 
 group :test do 
   gem 'rspec'
