@@ -8,8 +8,12 @@ gem 'rvm-capistrano'
 gem 'resque'
 gem 'resque-scheduler'
 
+gem 'rake'
+gem 'activesupport'
+
 group :test do 
   gem 'rspec'
   gem 'em-http-request'
   gem 'multipart_body'
+  gem 'kicker'
 end
