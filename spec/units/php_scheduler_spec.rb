@@ -16,7 +16,7 @@ describe "PhpScheduler" do
   it "should give up after 5th time" do 
     Resque.should_not_receive(:enqueue_at)
     Resque.should_not_receive(:enqueue)
-    PhpScheduler.schedule("foo", :num_of_tries => 6)
+    expect { PhpScheduler.schedule("foo", :num_of_tries => 6) }.to raise_error PhpScheduler::GiveUpException
   end
 
 end
