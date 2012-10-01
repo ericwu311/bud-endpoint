@@ -2,7 +2,7 @@ require 'bundler'
 Bundler.setup(:default, :test)
 Bundler.require(:default, :test)
 
-require_relative '../../config/environment'
+require_relative '../config/environment'
 
 require 'goliath/test_helper'
 require_relative '../bud_endpoint'
