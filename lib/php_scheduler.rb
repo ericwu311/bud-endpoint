@@ -1,8 +1,11 @@
+#TODO add check for infinit loop
 class PhpScheduler
 
   GiveUpException = Class.new(StandardError)
 
   def self.schedule(filename, options={})
+    options.symbolize_keys!
+
     num_of_tries = options[:num_of_tries]
     case num_of_tries
     when nil, 0

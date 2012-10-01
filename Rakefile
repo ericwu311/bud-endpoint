@@ -1,6 +1,7 @@
 $: << File.expand_path('../lib', __FILE__)
 
 require "resque/tasks"
+require 'resque_scheduler/tasks'
 
 load 'lib/tasks/resque.rake'
 

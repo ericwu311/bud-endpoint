@@ -7,7 +7,7 @@ describe "PhpScheduler" do
   end
 
   it "should enqueue Phpcmd to run in 5 seconds after first time" do 
-    2.upto(5) do |i|
+    1.upto(5) do |i|
       Resque.should_receive(:enqueue_in).with(5.seconds, PhpCmd, "foo", {:num_of_tries => i+1})
       PhpScheduler.schedule("foo", :num_of_tries => i)
     end
