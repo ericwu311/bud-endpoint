@@ -1,11 +1,15 @@
+puts "Deploying Bud-Endpoint..."
+
 require "bundler/capistrano"
-require "capistrano"     
+require "capistrano"   
 
 set :apps_path, "/apps"
 set :application, "bud_endpoint"
 set :deploy_to, "/apps/#{application}"
 
-set :user, "ubuntu"
+set :env, "production"
+
+set :user, :ops
 set :use_sudo, false
 
 set :scm, :git
@@ -15,19 +19,33 @@ set :git_shallow_clone, 1
 
 set :deploy_via, :remote_cache
 
+set :default_environment, {
+  'PATH' => "/usr/local/rbenv/shims:/usr/local/rbenv/bin:$PATH"
+}
+
 default_run_options[:pty] = true  # Must be set for the password prompt from git to work
 
-ssh_options[:keys] = [ENV['EC2_DEPLOY_KEY']] # need to pass this variable for the location of key
+# ssh_options[:keys] = [ENV['EC2_DEPLOY_KEY']] # need to pass this variable for the location of key
 ssh_options[:forward_agent] = true
 
-role :app, "54.243.213.2"
+if ENV['DEPLOYMENT_MODE'] == 'test'
+  role :app, "192.168.33.10"
+else
+  role :app, "54.243.213.2"  
+end
 
 namespace :deploy do
-  task :start do ; end
-  task :stop do ; end
+  task :start do
+    run "/apps/bud_endpoint/current/bin/goliath start"
+  end
+
+  task :stop do 
+    run "/apps/bud_endpoint/current/bin/goliath stop"
+  end
   # Assumes you are using Passenger
   task :restart, :roles => :app, :except => { :no_release => true } do
-    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+    stop
+    start
   end
 
   task :finalize_update, :except => { :no_release => true } do
@@ -37,10 +55,12 @@ namespace :deploy do
     run <<-CMD
       rm -rf #{latest_release}/log &&
       mkdir -p #{latest_release}/tmp &&
-      ln -s #{shared_path}/log #{latest_release}/log
-      ln -s #{apps_path}/shared/datalog #{latest_release}/data
+      ln -s #{shared_path}/log #{latest_release}/log &&
+      ln -s #{apps_path}/shared/data #{latest_release}/data
     CMD
+  end
 
-    
+  task :cleanup do 
+
   end
 end
