@@ -49,3 +49,4 @@ end
 
 # curl -i -F uploaded=@/Users/ericzou/Downloads/test_file.txt http://54.243.213.2:9000
 # curl -i -F uploaded=@/Users/ericzou/Downloads/test_file.txt http://127.0.0.1:9000
+# curl -i -F uploaded=@/Users/ericzou/Downloads/test_file.txt http://192.168.33.10:9000

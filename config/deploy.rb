@@ -1,13 +1,7 @@
 puts "Deploying Bud-Endpoint..."
 
 require "bundler/capistrano"
-
-require "rvm/capistrano"   
-$:.unshift(File.expand_path('./lib', ENV['rvm_path']))
-set :rvm_type, :system
-set :rvm_ruby_string, '1.9.3-p125'
-
-
+require "capistrano"   
 
 set :apps_path, "/apps"
 set :application, "bud_endpoint"
@@ -25,6 +19,10 @@ set :git_shallow_clone, 1
 
 set :deploy_via, :remote_cache
 
+set :default_environment, {
+  'PATH' => "/usr/local/rbenv/shims:/usr/local/rbenv/bin:$PATH"
+}
+
 default_run_options[:pty] = true  # Must be set for the password prompt from git to work
 
 # ssh_options[:keys] = [ENV['EC2_DEPLOY_KEY']] # need to pass this variable for the location of key
@@ -38,13 +36,16 @@ end
 
 namespace :deploy do
   task :start do
-    run "cd /apps/bud_endpoint/current && bundle exec ruby bud_endpoint.rb -sv -e production -d"
+    run "/apps/bud_endpoint/current/bin/goliath start"
   end
-  task :stop do ; end
+
+  task :stop do 
+    run "/apps/bud_endpoint/current/bin/goliath stop"
+  end
   # Assumes you are using Passenger
   task :restart, :roles => :app, :except => { :no_release => true } do
-    # run "bundle exec ruby bud"
-    run "#{try_sudo} touch #{File.join(current_path,'tmp','restart.txt')}"
+    stop
+    start
   end
 
   task :finalize_update, :except => { :no_release => true } do
@@ -57,5 +58,9 @@ namespace :deploy do
       ln -s #{shared_path}/log #{latest_release}/log &&
       ln -s #{apps_path}/shared/data #{latest_release}/data
     CMD
+  end
+
+  task :cleanup do 
+
   end
 end
